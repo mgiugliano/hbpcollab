@@ -21,11 +21,11 @@ def plot_sampleV(T, I0, I1, F0, S, tau):
 	fig = plt.figure()
 	ax1  = fig.add_subplot(211)	
 	ax1.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
-	ax1.xlim( (0,400) )                             # Set the horizontal limits
-	ax1.ylim( (-80,50) )                            # Set the vertical limits
-	ax1.xlabel('time [ms]')                         # Label for the horizontal axis
-	ax1.ylabel('i - injected current [pA]')       # Label for the vertical axis
-	ax1.grid()                                      # "Grid" on
+	ax1.set_xlim( (0,400) )                             # Set the horizontal limits
+	ax1.set_ylim( (-80,50) )                            # Set the vertical limits
+	ax1.set_xlabel('time [ms]')                         # Label for the horizontal axis
+	ax1.set_ylabel('i - injected current [pA]')       # Label for the vertical axis
+	ax1.set_grid()                                      # "Grid" on
 	ax1.set_aspect(aspect=2)
 
 	ax2  = fig.add_subplot(212)	
