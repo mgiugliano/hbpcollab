@@ -56,12 +56,12 @@ int main (int argc,char *argv[]) {
       exit(0);
   }
 
-  T        = (atof(argv[1]) > 0) ? atof(argv[1]) : 0.  
+  T        = (atof(argv[1]) > 0) ? atof(argv[1]) : 0.; 
   I0       = atof(argv[2]);   
-  I1       = (atof(argv[3]) > 0) ? atof(argv[3]) : 0.                  
-  F0       = (atof(argv[4]) > 0) ? atof(argv[4]) : 0.
+  I1       = (atof(argv[3]) > 0) ? atof(argv[3]) : 0.;                  
+  F0       = (atof(argv[4]) > 0) ? atof(argv[4]) : 0.;
   S        = (atof(argv[5]) > 0) ? atof(argv[5]) : 0.;
-  tau      = (atof(argv[6]) > 0) ? atof(argv[6]) : 0.
+  tau      = (atof(argv[6]) > 0) ? atof(argv[6]) : 0.;
   printVt  = (argc == 8) ? atoi(argv[7]) : 0;	// Default is "no dump of u(t)"
 
   N        = (INT)(T/dt);
