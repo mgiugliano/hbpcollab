@@ -74,24 +74,25 @@ int main (int argc,char *argv[]) {
   int printVt = 0;	// Flag: whether or not dump u(t) on file (output.x)
   int bool    = 0;	// Boolean variable for spike detection (by threshold crossing)
   double tmp1, tmp2, tmp3, tmp5, tmp6, tmp7, Vth, i;
-  double *out, *tspikes;
+  double *out, *current, *tspikes;
 
   if (argc < 7)  {
       printf("USAGE: T I0 I1 F0 S tau printVt\n"); 
       exit(0);
   }
 
-  T        = atof(argv[1]);  
+  T        = (atof(argv[1]) > 0) ? atof(argv[1]) : 0.  
   I0       = atof(argv[2]);   
-  I1       = atof(argv[3]);                  
-  F0       = atof(argv[4]);
-  S        = atof(argv[5]);
-  tau      = atof(argv[6]);
+  I1       = (atof(argv[3]) > 0) ? atof(argv[3]) : 0.                  
+  F0       = (atof(argv[4]) > 0) ? atof(argv[4]) : 0.
+  S        = (atof(argv[5]) > 0) ? atof(argv[5]) : 0.;
+  tau      = (atof(argv[6]) > 0) ? atof(argv[6]) : 0.
   printVt  = (argc == 8) ? atoi(argv[7]) : 0;	// Default is "no dump of u(t)"
 
   N        = (INT)(T/dt);
   out      = calloc(N, sizeof(double)); // Reserving memory for the N x 1 double array
   tspikes  = calloc(N, sizeof(double)); // Reserving memory for the N x 1 double array
+  current  = calloc(N, sizeof(double)); // Reserving memory for the N x 1 double array  
   Vth      = 0.;						// Peak detection by threshold crossing
   bool     = 0;							// 
   //printf("\HH January 2018 - M. Giugliano, HBP-SGA1,SP4\n\n");
@@ -127,7 +128,8 @@ int main (int argc,char *argv[]) {
     i    = i * tmp5 + tmp6 * gauss() + tmp7; // Update the O.U. noisy current realisation 
 
     t += dt;                   // Advance time (i.e. Euler's forward method)
-    out[index++] = V;		   // Log the membrane potential u(t)
+    out[index] = V;        // Log the membrane potential u(t)
+    current[index++] = i;  // Log the input current i(t)
     if (V>Vth && !bool) {
     	bool = 1;
     	tspikes[spikes++] = t;
@@ -142,10 +144,14 @@ if (printVt) {
  output = fopen("output.x", "w");
  for (index=0;index<N;index++) fprintf(output, "%f %f\n", index*dt, out[index]);
  fclose(output);
+ output = fopen("input.x", "w");
+ for (index=0;index<N;index++) fprintf(output, "%f %f\n", index*dt, current[index]);
+ fclose(output);
 }
 
-free(out);			// Free allocated memory
-free(tspikes);	    // Free allocated memory
+free(out);          // Free allocated memory
+free(tspikes);      // Free allocated memory
+free(current);      // Free allocated memory
 return 0;
 } // end main
 /********************************  MAIN ***********************************/ 
