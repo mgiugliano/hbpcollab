@@ -62,7 +62,7 @@ int main (int argc,char *argv[]) {
   F0       = atof(argv[4]);
   S        = atof(argv[5]);
   tau      = atof(argv[6]);
-  printVt  = (argc == 8) ? atoi(argv[6]) : 0;	// Default is "no dump of u(t)"
+  printVt  = (argc == 8) ? atoi(argv[7]) : 0;	// Default is "no dump of u(t)"
 
   N        = (INT)(T/dt);
   out      = calloc(N, sizeof(double)); // Reserving memory for the N x 1 double array
