@@ -51,8 +51,8 @@ int main (int argc,char *argv[]) {
   double tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, udot, i;
   double *out, *tspikes;
 
-  if (argc < 6)  {
-      printf("USAGE: T I0 I1 F0 S printVt\n"); 
+  if (argc < 7)  {
+      printf("USAGE: T I0 I1 F0 S tau printVt\n"); 
       exit(0);
   }
 
@@ -61,7 +61,8 @@ int main (int argc,char *argv[]) {
   I1       = atof(argv[3]);                  
   F0       = atof(argv[4]);
   S        = atof(argv[5]);
-  printVt  = (argc == 7) ? atoi(argv[6]) : 0;	// Default is "no dump of u(t)"
+  tau      = atof(argv[6]);
+  printVt  = (argc == 8) ? atoi(argv[6]) : 0;	// Default is "no dump of u(t)"
 
   N        = (INT)(T/dt);
   out      = calloc(N, sizeof(double)); // Reserving memory for the N x 1 double array
