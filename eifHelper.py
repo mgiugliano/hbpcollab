@@ -30,12 +30,12 @@ def plot_sampleV(T, I0, I1, F0, S, tau):
 
 	ax2  = fig.add_subplot(212)	
 	ax2.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
-	ax2.xlim( (0,400) )                             # Set the horizontal limits
-	ax2.ylim( (-80,50) )                            # Set the vertical limits
-	ax2.xlabel('time [ms]')                         # Label for the horizontal axis
-	ax2.ylabel('u - membrane potential [mV]')       # Label for the vertical axis
-	ax2.title(str(1000*Nspikes/T) + ' Hz')          # Figure title
-	ax2.grid()                                      # "Grid" on
+	ax2.set_xlim( (0,400) )                             # Set the horizontal limits
+	ax2.set_ylim( (-80,50) )                            # Set the vertical limits
+	ax2.set_xlabel('time [ms]')                         # Label for the horizontal axis
+	ax2.set_ylabel('u - membrane potential [mV]')       # Label for the vertical axis
+	ax2.set_title(str(1000*Nspikes/T) + ' Hz')          # Figure title
+	ax2.set_grid()                                      # "Grid" on
 	ax2.set_aspect(aspect=1)
 
 	plt.show()
@@ -66,11 +66,11 @@ def plot_FI(T, I0range, Srange):
 	fig = plt.figure()
 	ax = fig.add_subplot(111)	
 	ax.plot(I0range, F, 'o-', linewidth=3.0)		
-	ax.xlim( (np.min(I0range),np.max(I0range)) )   # Set the horizontal limits
-	#ax.ylim( (0,40) )                             # Set the vertical limits
-	ax.xlabel('Mean input current [pA]')           # Label for the horizontal axis
-	ax.ylabel('Mean Firing Rate [Hz]')             # Label for the vertical axis
-	ax.grid()                                      # "Grid" on	
+	ax.set_xlim( (np.min(I0range),np.max(I0range)) )   # Set the horizontal limits
+	#ax.set_ylim( (0,40) )                             # Set the vertical limits
+	ax.set_xlabel('Mean input current [pA]')           # Label for the horizontal axis
+	ax.set_ylabel('Mean Firing Rate [Hz]')             # Label for the vertical axis
+	ax.set_grid()                                      # "Grid" on	
 	plt.show()  
 #---------------------------------------------------------------------------------------
 	
