@@ -26,7 +26,7 @@ def plot_sampleV(T, I0, I1, F0, S, tau):
 	ax1.xlabel('time [ms]')                         # Label for the horizontal axis
 	ax1.ylabel('i - injected current [pA]')       # Label for the vertical axis
 	ax1.grid()                                      # "Grid" on
-    ax1.set_aspect(aspect=2)
+	ax1.set_aspect(aspect=2)
 
 	ax2  = fig.add_subplot(212)	
 	ax2.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
@@ -36,7 +36,7 @@ def plot_sampleV(T, I0, I1, F0, S, tau):
 	ax2.ylabel('u - membrane potential [mV]')       # Label for the vertical axis
 	ax2.title(str(1000*Nspikes/T) + ' Hz')          # Figure title
 	ax2.grid()                                      # "Grid" on
-    ax2.set_aspect(aspect=1)
+	ax2.set_aspect(aspect=1)
 
 	plt.show()
 #---------------------------------------------------------------------------------------
