@@ -25,7 +25,7 @@ def plot_sampleV(T, I0, I1, F0, S, tau):
 	ax1.set_ylim( (-80,50) )                            # Set the vertical limits
 	ax1.set_xlabel('time [ms]')                         # Label for the horizontal axis
 	ax1.set_ylabel('i - injected current [pA]')       # Label for the vertical axis
-	ax1.set_grid()                                      # "Grid" on
+	ax1.grid()                                        # "Grid" on
 	ax1.set_aspect(aspect=2)
 
 	ax2  = fig.add_subplot(212)	
@@ -35,7 +35,7 @@ def plot_sampleV(T, I0, I1, F0, S, tau):
 	ax2.set_xlabel('time [ms]')                         # Label for the horizontal axis
 	ax2.set_ylabel('u - membrane potential [mV]')       # Label for the vertical axis
 	ax2.set_title(str(1000*Nspikes/T) + ' Hz')          # Figure title
-	ax2.set_grid()                                      # "Grid" on
+	ax2.grid()                                          # "Grid" on
 	ax2.set_aspect(aspect=1)
 
 	plt.show()
@@ -70,7 +70,7 @@ def plot_FI(T, I0range, Srange):
 	#ax.set_ylim( (0,40) )                             # Set the vertical limits
 	ax.set_xlabel('Mean input current [pA]')           # Label for the horizontal axis
 	ax.set_ylabel('Mean Firing Rate [Hz]')             # Label for the vertical axis
-	ax.set_grid()                                      # "Grid" on	
+	ax.grid()                                          # "Grid" on	
 	plt.show()  
 #---------------------------------------------------------------------------------------
 	
