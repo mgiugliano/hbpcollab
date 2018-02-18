@@ -12,7 +12,7 @@ def newlines(p):
     ymin, ymax = ax.get_ybound()
 
     l1 = mlines.Line2D([p[0],p[0]], [ymin,p[1]])
-    l2 = mlines.Line2D([xmin,p[0]], [p[2],p[2]])
+    l2 = mlines.Line2D([xmin,p[0]], [p[1],p[1]])
     ax.add_line(l1)
     ax.add_line(l2)
 #
