@@ -204,6 +204,7 @@ def plot_FI_and_modulation(T, I0range, S, M, M1, FF):
 	ax2 = fig.add_subplot(122)	
 	ax2.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
 	tmp1 = -60 + 10 * np.cos(6.28*FF*u[:,0])
+	ax2.plot(u[:,0], tmp1)
 	ax2.set_xlim( (0,400) )                             # Set the horizontal limits
 	ax2.set_ylim( (-80,50) )                            # Set the vertical limits
 	ax2.set_xlabel('time [ms]')                         # Label for the horizontal axis
