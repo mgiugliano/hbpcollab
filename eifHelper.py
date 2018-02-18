@@ -141,12 +141,12 @@ def plot_FI_and_sample(T, I0range, S, M):
 	newline(p1,p2)
 
 	ax2 = fig.add_subplot(122)	
-	ax1.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
-	ax1.set_xlim( (0,400) )                             # Set the horizontal limits
-	ax1.set_ylim( (-80,50) )                            # Set the vertical limits
-	ax1.set_xlabel('time [ms]')                         # Label for the horizontal axis
-	ax1.set_ylabel('u - membrane potential [mV]')       # Label for the vertical axis
-	ax1.grid()                                        # "Grid" on
+	ax2.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
+	ax2.set_xlim( (0,400) )                             # Set the horizontal limits
+	ax2.set_ylim( (-80,50) )                            # Set the vertical limits
+	ax2.set_xlabel('time [ms]')                         # Label for the horizontal axis
+	ax2.set_ylabel('u - membrane potential [mV]')       # Label for the vertical axis
+	ax2.grid()                                        # "Grid" on
 
 	plt.show()  
 #---------------------------------------------------------------------------------------
