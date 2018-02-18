@@ -17,6 +17,22 @@ def newline(p1, p2):
         ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
         ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
 
+
+    if(p1[0] < p2[0]):
+    	xmin = p1[0]
+    	xmax = p2[0]
+    else:
+    	xmin = p2[0]
+    	xmax = p1[0]
+
+    if(p1[1] < p2[1]):
+    	ymin = p1[1]
+    	ymax = p2[1]
+    else:
+    	ymin = p2[1]
+    	ymax = p1[1]
+
+    #l = mlines.Line2D([xmin,xmax], [ymin,ymax])
     l = mlines.Line2D([xmin,xmax], [ymin,ymax])
     ax.add_line(l)
     return l
