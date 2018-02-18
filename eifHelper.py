@@ -6,36 +6,16 @@ import os
 #
 # Convenience function to plot a line between two points
 #
-def newline(p1, p2):
+def newlines(p):
     ax = plt.gca()
     xmin, xmax = ax.get_xbound()
+    ymin, ymax = ax.get_ybound()
 
-    if(p2[0] == p1[0]):
-        xmin = xmax = p1[0]
-        ymin, ymax = ax.get_ybound()
-    else:
-        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
-        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
-
-
-    if(p1[0] < p2[0]):
-    	xmin = p1[0]
-    	xmax = p2[0]
-    else:
-    	xmin = p2[0]
-    	xmax = p1[0]
-
-    if(p1[1] < p2[1]):
-    	ymin = p1[1]
-    	ymax = p2[1]
-    else:
-    	ymin = p2[1]
-    	ymax = p1[1]
-
-    #l = mlines.Line2D([xmin,xmax], [ymin,ymax])
-    l = mlines.Line2D([xmin,xmax], [ymin,ymax])
-    ax.add_line(l)
-    return l
+    l1 = mlines.Line2D([p[0],p[0]], [ymin,p[1]])
+    l2 = mlines.Line2D([xmin,p[0]], [p[2],p[2]])
+    ax.add_line(l1)
+    ax.add_line(l2)
+    return l1 l2
 #
 # Plot in a new figure the sample voltage trace of a EIF
 # receiving a noisy current with sinusoidal modulation of
@@ -150,11 +130,8 @@ def plot_FI_and_sample(T, I0range, S, M):
 	ax.set_ylabel('Mean Firing Rate [Hz]')             # Label for the vertical axis
 	ax.grid()                                          # "Grid" on	
 
-	p1 = [M,0]
-	p2 = [M,1000. * N / T]
-	newline(p1,p2)
-	p1 = [0,1000. * N / T]
-	newline(p1,p2)
+	p = [M,1000. * N / T]
+	newlines(p)
 
 	ax2 = fig.add_subplot(122)	
 	ax2.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
