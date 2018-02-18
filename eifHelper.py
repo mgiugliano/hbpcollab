@@ -217,9 +217,57 @@ def plot_FI_and_modulation(T, I0range, S, M, M1, FF):
 	
 	plt.show() 
 #---------------------------------------------------------------------------------------
+def plot_histogram(T, I0, S, I1, F):
 
+def update(F):
+    #F = 60          # Hz
+    #T  = 200000.   # ms
 
+    #I0 = 500.      # pA
+    #S  = 300.      # pA
+    #I1 = 80.       # pA
+    tau= 5.        # ms
+    
+    myfile = 'spikes.x'
+    cmdstr = "./eif " + str(T) + " " + str(I0) + " " + str(I1) + " " + str(F) + " " + str(S) + " " + str(tau) + " 	0"
+    return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
+    if os.stat(myfile).st_size:
+        tsp = np.loadtxt(myfile) 
+        N   = np.size(tsp)
+    else:
+        N   = 0
+        
+    x   = np.cos(6.28318530718 * tsp * F / 1000.)/N
+    y   = np.sin(6.28318530718 * tsp * F / 1000.)/N
 
+    R0  = 1000. * N / T   # spikes/s
+    R1  = np.absolute(np.complex(np.sum(x),np.sum(y)))
+    PHI = np.angle(np.complex(np.sum(x),np.sum(y)), deg=False)
+    
+    tsp = np.remainder(tsp,  2 * 1000./F)
+    C   = np.floor_divide(T, 2 * 1000./F)
+
+    fig = plt.figure(figsize=(14,4))
+
+    hist, bins = np.histogram(tsp, bins=40)
+    hist = 1000. * hist / ((bins[3] - bins[2]) * C)   # Hz 
+    W = (2. * 1000./F)/40.
+    plt.bar(bins[:-1], hist, width=W, color='black')
+
+    y = R0 + 50*R1 * np.cos(6.28318530718 * bins * F / 1000. - PHI)
+    z = R0 + 50*R1 * np.cos(6.28318530718 * bins * F / 1000.)
+    plt.plot(bins, y, 'r', linewidth=1)
+    plt.plot(bins, z, 'g--', linewidth=1)
+
+    ax = fig.add_subplot(111)
+    ax.set_xlim( (0, 2 * 1000./F - (bins[3] - bins[2])) )                         # Set the horizontal limits
+    ax.set_ylim( (0, 2*R0) )                         # Set the horizontal limits
+    ax.set_xlabel('time within two periods [ms]')           # Label for the horizontal axis
+    ax.set_ylabel('Instantaneous firing rate [spikes/s]')   # Label for the vertical axis
+    #ax.grid()                                               # "Grid" on
+
+    plt.show() 
+#---------------------------------------------------------------------------------------
 
 
 
