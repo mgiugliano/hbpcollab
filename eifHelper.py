@@ -133,6 +133,83 @@ def plot_FI_and_sample(T, I0range, S, M):
 
 	plt.show()  
 #---------------------------------------------------------------------------------------
+def plot_FI_and_modulation(T, I0range, S, M, M1, FF):
+	m  = np.size(I0range)
+	F  = np.zeros((m,1))
+	I1 = 0.                  
+	F0 = 0.                  
+	tau= 5.
+	myfile = 'spikes.x'
+	for i in range(m):
+		I0= I0range[i]
+		cmdstr = "./eif " + str(T) + " " + str(I0) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + 	" 0"
+		return_code = sb.call(cmdstr, shell=True)
+		if os.stat(myfile).st_size:
+			tsp = np.loadtxt(myfile) 
+			N   = np.size(tsp)
+		else:
+			N   = 0
+		F[i,0] = 1000. * N / T;
+	
+	cmdstr = "./eif " + str(400.) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 	1"
+	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
+	u   = np.loadtxt('output.x', delimiter=' ')     # Load into memory the file output.x
+	
+	#I1 = M1                  
+	#F0 = FF                  
+	
+	cmdstr = "./eif " + str(T) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 1"
+	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
+	if os.stat(myfile).st_size:
+		tsp = np.loadtxt(myfile) 
+		N   = np.size(tsp)
+	else:
+		N   = 0
+	
+	cmdstr = "./eif " + str(T) + " " + str(M*1.1) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + 	" 1"
+	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
+	if os.stat(myfile).st_size:
+		tsp = np.loadtxt(myfile) 
+		N1   = np.size(tsp)
+	else:
+		N1   = 0
+	        
+	fig = plt.figure(figsize=(14,4))
+	ax1 = fig.add_subplot(121)	
+	ax1.plot(I0range, F, 'o-', linewidth=3.0)		
+	ax1.set_xlim( (np.min(I0range),np.max(I0range)) )   # Set the horizontal limits
+	#ax1.set_ylim( (0,40) )                             # Set the vertical limits
+	ax1.set_xlabel('Mean input current [pA]')           # Label for the horizontal axis
+	ax1.set_ylabel('Mean Firing Rate [Hz]')             # Label for the vertical axis
+	ax1.grid()                                          # "Grid" on	
+	
+	p = [M,1000. * N / T]
+	xmin, xmax = ax1.get_xbound()
+	ymin, ymax = ax1.get_ybound()
+	l1 = mlines.Line2D([p[0],p[0]], [ymin,p[1]])
+	l2 = mlines.Line2D([xmin,p[0]], [p[1],p[1]])
+	ax1.add_line(l1)
+	ax1.add_line(l2)
+	
+	alpha = 1000. * (N1-N) / (T * 0.1*M);
+	print(alpha)
+	t = np.arange(ymin, p[1], (p[1]-ymin)*0.005)
+	i = M + M1 * np.cos(6.28*FF*t*0.02)
+	ax1.plot(i,t)
+	t = np.arange(xmin, p[0], (p[0]-xmin)*0.005)
+	f = p[1] + alpha * M1 * np.cos(6.28*FF*t*0.002)
+	ax1.plot(t,f)
+	
+	ax2 = fig.add_subplot(122)	
+	ax2.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
+	ax2.set_xlim( (0,400) )                             # Set the horizontal limits
+	ax2.set_ylim( (-80,50) )                            # Set the vertical limits
+	ax2.set_xlabel('time [ms]')                         # Label for the horizontal axis
+	ax2.set_ylabel('u - membrane potential [mV]')       # Label for the vertical axis
+	ax2.grid()                                        # "Grid" on
+	
+	plt.show() 
+#---------------------------------------------------------------------------------------
 
 
 
