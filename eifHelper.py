@@ -15,7 +15,6 @@ def newlines(p):
     l2 = mlines.Line2D([xmin,p[0]], [p[2],p[2]])
     ax.add_line(l1)
     ax.add_line(l2)
-    return l1 l2
 #
 # Plot in a new figure the sample voltage trace of a EIF
 # receiving a noisy current with sinusoidal modulation of
