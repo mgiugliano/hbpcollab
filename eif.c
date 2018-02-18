@@ -59,7 +59,7 @@ int main (int argc,char *argv[]) {
   T        = (atof(argv[1]) > 0) ? atof(argv[1]) : 0.; 
   I0       = atof(argv[2]);   
   I1       = (atof(argv[3]) > 0) ? atof(argv[3]) : 0.;                  
-  F0       = (atof(argv[4]) > 0) ? atof(argv[4]) : 0.;
+  F0       = (atof(argv[4]) > 0) ? atof(argv[4])/1000. : 0.; // in kHz (internally)
   S        = (atof(argv[5]) > 0) ? atof(argv[5]) : 0.;
   tau      = (atof(argv[6]) > 0) ? atof(argv[6]) : 0.;
   printVt  = (argc == 8) ? atoi(argv[7]) : 0;	// Default is "no dump of u(t)"
@@ -98,10 +98,10 @@ int main (int argc,char *argv[]) {
         else {                     // Still in refractoriness...
             u = uH;                // I keep u clamped at uH
         }                
-        t += dt;                   // Advance time (i.e. Euler's forward method)
         i = i * tmp5 + tmp6 * gauss() + tmp7; // Update the O.U. noisy current realisation 
         out[index] = u;		     // Log the membrane potential u(t)
-        current[index++] = i;  // Log the input current i(t)
+        current[index++] = i+ I1 * cos(TWOPI * F0 * t);  // Log the input current i(t)
+        t += dt;                   // Advance time (i.e. Euler's forward method)
 } // end while()
 
  output = fopen("spikes.x", "w");
