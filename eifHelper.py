@@ -116,12 +116,12 @@ def plot_FI_and_sample(T, I0range, S, M):
 	ax1.grid()                                          # "Grid" on	
 
 	p = [M,1000. * N / T]
-    xmin, xmax = ax1.get_xbound()
-    ymin, ymax = ax1.get_ybound()
-    l1 = mlines.Line2D([p[0],p[0]], [ymin,p[1]])
-    l2 = mlines.Line2D([xmin,p[0]], [p[1],p[1]])
-    ax1.add_line(l1)
-    ax1.add_line(l2)
+	xmin, xmax = ax1.get_xbound()
+	ymin, ymax = ax1.get_ybound()
+	l1 = mlines.Line2D([p[0],p[0]], [ymin,p[1]])
+	l2 = mlines.Line2D([xmin,p[0]], [p[1],p[1]])
+	ax1.add_line(l1)
+	ax1.add_line(l2)
 
 	ax2 = fig.add_subplot(122)	
 	ax2.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
