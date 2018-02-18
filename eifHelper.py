@@ -134,12 +134,15 @@ def plot_FI_and_sample(T, I0range, S, M):
 	plt.show()  
 #---------------------------------------------------------------------------------------
 def plot_FI_and_modulation(T, I0range, S, M, M1, FF):
+
 	m  = np.size(I0range)
 	F  = np.zeros((m,1))
 	I1 = 0.                  
 	F0 = 0.                  
 	tau= 5.
+
 	myfile = 'spikes.x'
+
 	for i in range(m):
 		I0= I0range[i]
 		cmdstr = "./eif " + str(T) + " " + str(I0) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + 	" 0"
@@ -151,16 +154,10 @@ def plot_FI_and_modulation(T, I0range, S, M, M1, FF):
 			N   = 0
 		F[i,0] = 1000. * N / T;
 	
-	I1 = M1                  
-	F0 = FF                  
-	cmdstr = "./eif " + str(400.) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 	1"
-	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
-	u   = np.loadtxt('output.x', delimiter=' ')     # Load into memory the file output.x
-	
 	I1 = 0.                  
 	F0 = 0.                  
-	
-	cmdstr = "./eif " + str(T) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 1"
+
+	cmdstr = "./eif " + str(T) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 0"
 	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
 	if os.stat(myfile).st_size:
 		tsp = np.loadtxt(myfile) 
@@ -168,13 +165,20 @@ def plot_FI_and_modulation(T, I0range, S, M, M1, FF):
 	else:
 		N   = 0
 	
-	cmdstr = "./eif " + str(T) + " " + str(M*1.1) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + 	" 1"
+	cmdstr = "./eif " + str(T) + " " + str(M*1.1) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + 	" 0"
 	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
 	if os.stat(myfile).st_size:
 		tsp = np.loadtxt(myfile) 
 		N1   = np.size(tsp)
 	else:
 		N1   = 0
+
+	I1 = M1                  
+	F0 = FF                  
+	cmdstr = "./eif " + str(400.) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 	1"
+	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
+	u   = np.loadtxt('output.x', delimiter=' ')     # Load into memory the file output.x
+	
 	        
 	fig = plt.figure(figsize=(14,4))
 	ax1 = fig.add_subplot(121)	
