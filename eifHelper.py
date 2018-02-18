@@ -151,12 +151,14 @@ def plot_FI_and_modulation(T, I0range, S, M, M1, FF):
 			N   = 0
 		F[i,0] = 1000. * N / T;
 	
+	I1 = M1                  
+	F0 = FF                  
 	cmdstr = "./eif " + str(400.) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 	1"
 	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
 	u   = np.loadtxt('output.x', delimiter=' ')     # Load into memory the file output.x
 	
-	#I1 = M1                  
-	#F0 = FF                  
+	I1 = 0.                  
+	F0 = 0.                  
 	
 	cmdstr = "./eif " + str(T) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 1"
 	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
@@ -192,7 +194,6 @@ def plot_FI_and_modulation(T, I0range, S, M, M1, FF):
 	ax1.add_line(l2)
 	
 	alpha = 1000. * (N1-N) / (T * 0.1*M);
-	print(alpha)
 	t = np.arange(ymin, p[1], (p[1]-ymin)*0.005)
 	i = M + M1 * np.cos(6.28*FF*t*0.02)
 	ax1.plot(i,t)
