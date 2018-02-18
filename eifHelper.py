@@ -1,7 +1,25 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
+import matplotlib.lines as mlines
 import subprocess as sb
 import os
+#
+# Convenience function to plot a line between two points
+#
+def newline(p1, p2):
+    ax = plt.gca()
+    xmin, xmax = ax.get_xbound()
+
+    if(p2[0] == p1[0]):
+        xmin = xmax = p1[0]
+        ymin, ymax = ax.get_ybound()
+    else:
+        ymax = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmax-p1[0])
+        ymin = p1[1]+(p2[1]-p1[1])/(p2[0]-p1[0])*(xmin-p1[0])
+
+    l = mlines.Line2D([xmin,xmax], [ymin,ymax])
+    ax.add_line(l)
+    return l
 #
 # Plot in a new figure the sample voltage trace of a EIF
 # receiving a noisy current with sinusoidal modulation of
@@ -72,4 +90,73 @@ def plot_FI(T, I0range, Srange):
 	ax.grid()                                          # "Grid" on	
 	plt.show()  
 #---------------------------------------------------------------------------------------
+def plot_FI_and_sample(T, I0range, S, M):
+	m  = np.size(I0range)
+	F  = np.zeros((m,1))
+
+	I1 = 0.                  
+	F0 = 0.                  
+	tau= 5.
+
+	myfile = 'spikes.x'
+
+	for i in range(m):
+		I0= I0range[i]
+		cmdstr = "./eif " + str(T) + " " + str(I0) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 0"
+		return_code = sb.call(cmdstr, shell=True)
+		if os.stat(myfile).st_size:
+			tsp = np.loadtxt(myfile) 
+			N   = np.size(tsp)
+		else:
+			N   = 0
+		F[i,1] = 1000. * N / T;
+
+
+	cmdstr = "./eif " + str(1000.) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 1"
+	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
+	u   = np.loadtxt('output.x', delimiter=' ')     # Load into memory the file output.x
+
+	cmdstr = "./eif " + str(T) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 1"
+	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
+	if os.stat(myfile).st_size:
+		tsp = np.loadtxt(myfile) 
+		N   = np.size(tsp)
+	else:
+		N   = 0
+
+
+	fig = plt.figure(figsize=(14,4))
+	ax = fig.add_subplot(121)	
+	ax.plot(I0range, F, 'o-', linewidth=3.0)		
+	ax.set_xlim( (np.min(I0range),np.max(I0range)) )   # Set the horizontal limits
+	#ax.set_ylim( (0,40) )                             # Set the vertical limits
+	ax.set_xlabel('Mean input current [pA]')           # Label for the horizontal axis
+	ax.set_ylabel('Mean Firing Rate [Hz]')             # Label for the vertical axis
+	ax.grid()                                          # "Grid" on	
+
+	p1 = [M,0]
+	p2 = [M,1000. * N / T]
+	newline(p1,p2)
+	p1 = [0,1000. * N / T]
+	newline(p1,p2)
+
+	ax2 = fig.add_subplot(122)	
+	ax1.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
+	ax1.set_xlim( (0,400) )                             # Set the horizontal limits
+	ax1.set_ylim( (-80,50) )                            # Set the vertical limits
+	ax1.set_xlabel('time [ms]')                         # Label for the horizontal axis
+	ax1.set_ylabel('u - membrane potential [mV]')       # Label for the vertical axis
+	ax1.grid()                                        # "Grid" on
+
+	plt.show()  
+#---------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
 	
