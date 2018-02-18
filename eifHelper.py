@@ -4,18 +4,6 @@ import matplotlib.lines as mlines
 import subprocess as sb
 import os
 #
-# Convenience function to plot a line between two points
-#
-def newlines(p):
-    ax = plt.gca()
-    xmin, xmax = ax.get_xbound()
-    ymin, ymax = ax.get_ybound()
-
-    l1 = mlines.Line2D([p[0],p[0]], [ymin,p[1]])
-    l2 = mlines.Line2D([xmin,p[0]], [p[1],p[1]])
-    ax.add_line(l1)
-    ax.add_line(l2)
-#
 # Plot in a new figure the sample voltage trace of a EIF
 # receiving a noisy current with sinusoidal modulation of
 # the mean.
@@ -106,8 +94,7 @@ def plot_FI_and_sample(T, I0range, S, M):
 			N   = 0
 		F[i,0] = 1000. * N / T;
 
-
-	cmdstr = "./eif " + str(1000.) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 1"
+	cmdstr = "./eif " + str(400.) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 1"
 	return_code = sb.call(cmdstr, shell=True)       # Launch the call to the external program
 	u   = np.loadtxt('output.x', delimiter=' ')     # Load into memory the file output.x
 
@@ -119,18 +106,22 @@ def plot_FI_and_sample(T, I0range, S, M):
 	else:
 		N   = 0
 
-
 	fig = plt.figure(figsize=(14,4))
-	ax = fig.add_subplot(121)	
-	ax.plot(I0range, F, 'o-', linewidth=3.0)		
-	ax.set_xlim( (np.min(I0range),np.max(I0range)) )   # Set the horizontal limits
-	#ax.set_ylim( (0,40) )                             # Set the vertical limits
-	ax.set_xlabel('Mean input current [pA]')           # Label for the horizontal axis
-	ax.set_ylabel('Mean Firing Rate [Hz]')             # Label for the vertical axis
-	ax.grid()                                          # "Grid" on	
+	ax1 = fig.add_subplot(121)	
+	ax1.plot(I0range, F, 'o-', linewidth=3.0)		
+	ax1.set_xlim( (np.min(I0range),np.max(I0range)) )   # Set the horizontal limits
+	#ax1.set_ylim( (0,40) )                             # Set the vertical limits
+	ax1.set_xlabel('Mean input current [pA]')           # Label for the horizontal axis
+	ax1.set_ylabel('Mean Firing Rate [Hz]')             # Label for the vertical axis
+	ax1.grid()                                          # "Grid" on	
 
 	p = [M,1000. * N / T]
-	newlines(p)
+    xmin, xmax = ax1.get_xbound()
+    ymin, ymax = ax1.get_ybound()
+    l1 = mlines.Line2D([p[0],p[0]], [ymin,p[1]])
+    l2 = mlines.Line2D([xmin,p[0]], [p[1],p[1]])
+    ax1.add_line(l1)
+    ax1.add_line(l2)
 
 	ax2 = fig.add_subplot(122)	
 	ax2.plot(u[:,0], u[:,1])                        # Make the actual plot versus time
