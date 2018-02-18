@@ -109,7 +109,7 @@ def plot_FI_and_sample(T, I0range, S, M):
 			N   = np.size(tsp)
 		else:
 			N   = 0
-		F[i,1] = 1000. * N / T;
+		F[i,0] = 1000. * N / T;
 
 
 	cmdstr = "./eif " + str(1000.) + " " + str(M) + " " + str(I1) + " " + str(F0) + " " + str(S) + " " + str(tau) + " 1"
