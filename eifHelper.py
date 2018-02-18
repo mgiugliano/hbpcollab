@@ -218,8 +218,6 @@ def plot_FI_and_modulation(T, I0range, S, M, M1, FF):
 	plt.show() 
 #---------------------------------------------------------------------------------------
 def plot_histogram(T, I0, S, I1, F):
-
-def update(F):
     #F = 60          # Hz
     #T  = 200000.   # ms
 
