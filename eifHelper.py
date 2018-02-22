@@ -239,7 +239,7 @@ def plot_histogram(T, I0, S, I1, F):
     y   = np.sin(6.28318530718 * tsp * F / 1000.)/N
 
     R0  = 1000. * N / T   # spikes/s
-    R1  = np.absolute(np.complex(np.sum(x), np.sum(y)))
+    R1  = 2*R0*np.absolute(np.complex(np.sum(x), np.sum(y)))
     PHI = np.angle(np.complex(np.sum(x), np.sum(y)), deg=False)
     tsp = np.remainder(tsp,  2 * 1000./F)
     C   = np.floor_divide(T, 2 * 1000./F)
@@ -248,7 +248,7 @@ def plot_histogram(T, I0, S, I1, F):
 
     hist, bins = np.histogram(tsp, bins=40)
     hist = 1000. * hist / ((bins[3] - bins[2]) * C)   # Hz
-    R1 = (np.max(hist) - np.min(hist))/2
+    # R1 = (np.max(hist) - np.min(hist))/2
 
     W = (2. * 1000./F)/40.
     plt.bar(bins[:-1], hist, width=W, color='black')
@@ -284,6 +284,7 @@ def plot_transferfunction(T, I0, S, I1, FRange):
 
         x = np.cos(6.28318530718 * tsp * freq / 1000.) / N
         y = np.sin(6.28318530718 * tsp * freq / 1000.) / N
+        R0 = 1000. * N / T  # spikes/s
         transfervec[counter] = np.absolute(np.complex(np.sum(x), np.sum(y)))
         phasevec[counter] = -np.angle(np.complex(np.sum(x), np.sum(y)), deg=False)
         counter += 1
