@@ -289,14 +289,19 @@ def plot_transferfunction(T, I0, S, I1, FRange):
         phasevec[counter] = -np.angle(np.complex(np.sum(x), np.sum(y)), deg=False)
         counter += 1
 
+    normTrans = transfervec[0]
+    for i in np.arange(0, len(FRange)):
+        transfervec[i] = transfervec[i] / normTrans
+
     fig = plt.figure(figsize=(14,4))
     ax1 = plt.subplot(2, 1, 1)
     plt.grid('on')
-    plt.loglog(FRange, transfervec)
+    plt.loglog(FRange, transfervec, 'o-', linewidth=3)
+    plt.loglog(FRange, 0.707*np.ones((FRange.size)), linewidth=2, color='black')
     plt.xlabel('Frequency [Hz]')
     plt.ylabel('Transfer factor')
     ax2 = plt.subplot(2, 1, 2, sharex=ax1)
-    plt.semilogx(FRange, phasevec)
+    plt.semilogx(FRange, phasevec, 'o-', linewidth=3)
     plt.xlabel('Frequency [Hz]')
     plt.ylabel('Phase delay [Rad]')
     plt.grid('on')
