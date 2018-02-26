@@ -289,7 +289,11 @@ def plot_transferfunction(T, I0, S, I1, FRange):
         phasevec[counter] = -np.angle(np.complex(np.sum(x), np.sum(y)), deg=False)
         counter += 1
 
-    phasevec = phaseunwrap(phasevec)
+    phasevec = phase_unwrap(phasevec)
+    try:
+        calc_cof(FRange, transfervec)
+    except:
+        print("Couldn't find a crossing between transfer curve and 70% line.")
     fig = plt.figure(figsize=(14, 4))
     ax1 = plt.subplot(2, 1, 1)
     plt.grid('on')
@@ -305,10 +309,17 @@ def plot_transferfunction(T, I0, S, I1, FRange):
     plt.subplots_adjust(hspace=0)
     plt.show()
 #---------------------------------------------------------------------------------------
-def phaseunwrap(phasevec):
+def phase_unwrap(phasevec):
     for i in np.arange(1, len(phasevec)):
         currphaseval = phasevec[i]
         if currphaseval - phasevec[i-1] > 2:
             phasevec[i:] -= 2*np.pi
     return phasevec
+#---------------------------------------------------------------------------------------
+def calc_cof(FRange, transfervec):
+    indthres = np.nonzero(transfervec < 0.707*transfervec[0])
+    crossind = indthres[0]
+    cof = FRange[crossind[0]-1] - ((transfervec[crossind[0]-1] - transfervec[0]*0.707) / (transfervec[crossind[0]-1] - transfervec[crossind[0]])) * (FRange[crossind[0]-1] - FRange[crossind[0]])
+    strtoprint = "The cut-off frequency is at " + str(cof[0]) + " Hz."
+    print(strtoprint)
 #---------------------------------------------------------------------------------------
