@@ -289,6 +289,7 @@ def plot_transferfunction(T, I0, S, I1, FRange):
         phasevec[counter] = -np.angle(np.complex(np.sum(x), np.sum(y)), deg=False)
         counter += 1
 
+    phasevec = phaseunwrap(phasevec)
     fig = plt.figure(figsize=(14, 4))
     ax1 = plt.subplot(2, 1, 1)
     plt.grid('on')
@@ -303,4 +304,11 @@ def plot_transferfunction(T, I0, S, I1, FRange):
     plt.grid('on')
     plt.subplots_adjust(hspace=0)
     plt.show()
+#---------------------------------------------------------------------------------------
+def phaseunwrap(phasevec):
+    for i in np.arange(1, len(phasevec)):
+        currphaseval = phasevec[i]
+        if currphaseval - phasevec[i-1] > 2:
+            phasevec[i:] -= 2*np.pi
+    return phasevec
 #---------------------------------------------------------------------------------------
