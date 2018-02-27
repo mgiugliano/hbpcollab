@@ -16,7 +16,7 @@ def load_model():
     h.load_file("stdrun.hoc")
     h.load_file("import3d.hoc")
     h.load_file("constants.hoc")
-    h.load_file("morphology.hoc")
+    #h.load_file("morphology.hoc")
     cell = rn.create_cell(add_synapses=0)
     return cell
 
