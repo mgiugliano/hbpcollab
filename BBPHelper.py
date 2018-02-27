@@ -12,7 +12,7 @@ import random
 # the mean.
 #
 def load_model():
-    #h.cvode.cache_efficient(0)
+    h.cvode.cache_efficient(0)
     h.load_file("stdrun.hoc")
     h.load_file("import3d.hoc")
     h.load_file("constants.hoc")
@@ -186,7 +186,8 @@ def plot_FI_and_sample(cell, T, I0range, S, M):
     p = [M,1000. * N / T]
     indthres = np.nonzero(I0range > M)
     crossind = indthres[0]
-    p[1] = (F[crossind[0]]-F[crossind[0]-1])/(I0range[crossind[0]]-I0range[crossind[0]-1])*M
+    rico = (F[crossind[0]]-F[crossind[0]-1])/(I0range[crossind[0]]-I0range[crossind[0]-1])
+    p[1] = rico*(M-I0range[crossind[0]-1]) + F[crossind[0]-1]
     xmin, xmax = ax1.get_xbound()
     ymin, ymax = ax1.get_ybound()
     l1 = mlines.Line2D([p[0],p[0]], [ymin,p[1]])
@@ -231,7 +232,7 @@ def plot_FI_and_modulation(cell, T, I0range, S, M, M1, FF):
 
         N = len(counts)
 
-        F[i,0] = 1000. * N / T;
+        F[i,0] = 1000. * N / T
 
     I1 = 0.
     F0 = 0.
@@ -286,6 +287,12 @@ def plot_FI_and_modulation(cell, T, I0range, S, M, M1, FF):
     ax1.grid()                                          # "Grid" on
 
     p = [M,1000. * N / T]
+
+    indthres = np.nonzero(I0range > M)
+    crossind = indthres[0]
+    rico = (F[crossind[0]] - F[crossind[0] - 1]) / (I0range[crossind[0]] - I0range[crossind[0] - 1])
+    p[1] = rico * (M - I0range[crossind[0] - 1]) + F[crossind[0] - 1]
+
     xmin, xmax = ax1.get_xbound()
     ymin, ymax = ax1.get_ybound()
     l1 = mlines.Line2D([p[0],p[0]], [ymin,p[1]])
@@ -293,20 +300,20 @@ def plot_FI_and_modulation(cell, T, I0range, S, M, M1, FF):
     ax1.add_line(l1)
     ax1.add_line(l2)
 
-    alpha = 1000. * (N1-N) / (T * 0.1*M);
+    alpha = 1000. * (N1-N) / (T * 0.1*M)
     t = np.arange(ymin, p[1], (p[1]-ymin)*0.005)
-    i = M + M1 * np.cos(6.28*FF*t*0.02)
+    i = M + M1 * np.cos(6.28*FF*t*0.02*10000.)
     ax1.plot(i,t)
+    f = p[1] + 20 * M1 * np.cos(6.28 * FF * t * 0.002 * 100000.)
     t = np.arange(xmin, p[0], (p[0]-xmin)*0.005)
-    f = p[1] + alpha * M1 * np.cos(6.28*FF*t*0.002)
     ax1.plot(t,f)
 
     ax2 = fig.add_subplot(122)
     ax2.plot(timevec, somav)                        # Make the actual plot versus time
     # timevecpyt = timevec.to_python()
-    timevecpyt = range(0., T, dt)
+    timevecpyt = np.arange(0., T, dt)
     tmp1 = -60 + 10 * np.cos(6.28*FF*timevecpyt)
-    ax2.plot(timevec, tmp1)
+    ax2.plot(timevecpyt, tmp1)
     ax2.set_xlim( (0,400) )                             # Set the horizontal limits
     ax2.set_ylim( (-80,50) )                            # Set the vertical limits
     ax2.set_xlabel('time [ms]')                         # Label for the horizontal axis
@@ -322,7 +329,7 @@ def plot_histogram(cell, T, I0, S, I1, F):
     #I0 = 500.      # pA
     #S  = 300.      # pA
     #I1 = 80.       # pA
-    tau= 5.        # ms
+    tau = 5.        # ms
     delay = 0
     dt = 0.05
     mu = 0
@@ -338,32 +345,33 @@ def plot_histogram(cell, T, I0, S, I1, F):
     run_model(dt, T)
 
     N = len(counts)
-    tsp = counts.to_python()
-    x   = np.cos(6.28318530718 * tsp * F / 1000.)/N
-    y   = np.sin(6.28318530718 * tsp * F / 1000.)/N
+    tsp = np.array(counts.to_python())
+    x   = np.cos(6.28318530718 * tsp * F)/N
+    y   = np.sin(6.28318530718 * tsp * F)/N
 
     R0  = 1000. * N / T   # spikes/s
     R1  = 2*R0*np.absolute(np.complex(np.sum(x), np.sum(y)))
     PHI = np.angle(np.complex(np.sum(x), np.sum(y)), deg=False)
-    tsp = np.remainder(tsp,  2 * 1000./F)
-    C   = np.floor_divide(T, 2 * 1000./F)
-
-    fig = plt.figure(figsize=(14,4))
+    tsp = np.remainder(tsp,  2 / F)
+    C   = np.floor_divide(T, 2 / F)
+    print(C)
+    fig = plt.figure(figsize=(14, 4))
 
     hist, bins = np.histogram(tsp, bins=40)
+    print(hist)
     hist = 1000. * hist / ((bins[3] - bins[2]) * C)   # Hz
     # R1 = (np.max(hist) - np.min(hist))/2
 
-    W = (2. * 1000./F)/40.
+    W = (2. / F)/40.
     plt.bar(bins[:-1], hist, width=W, color='black')
 
-    y = R0 + R1 * np.cos(6.28318530718 * bins * F / 1000. - PHI)
-    z = R0 + R1 * np.cos(6.28318530718 * bins * F / 1000.)
+    y = R0 + R1 * np.cos(6.28318530718 * bins * F - PHI)
+    z = R0 + R1 * np.cos(6.28318530718 * bins * F )
     plt.plot(bins, y, 'r', linewidth=1)
     plt.plot(bins, z, 'g--', linewidth=1)
 
     ax = fig.add_subplot(111)
-    ax.set_xlim( (0, 2 * 1000./F - (bins[3] - bins[2])) )                         # Set the horizontal limits
+    ax.set_xlim( (0, 2./F - (bins[3] - bins[2])) )                         # Set the horizontal limits
     # ax.set_ylim( (0, 2*R0) )                         # Set the horizontal limits
     ax.set_xlabel('time within two periods [ms]')           # Label for the horizontal axis
     ax.set_ylabel('Instantaneous firing rate [spikes/s]')   # Label for the vertical axis
@@ -384,7 +392,7 @@ def plot_transferfunction(cell, T, I0, S, I1, FRange):
     counter = 0
     for freq in FRange:
         seed = random.randint(0, 1000)
-        stim = attach_noise_sin_clamp(cell, delay, T, I0, I1, freq, dt, tau, S, mu, loc, seed)
+        stim = attach_noise_sin_clamp(cell, delay, T, I0, I1, freq/1000., dt, tau, S, mu, loc, seed)
 
         counts = h.Vector()
         apc = h.APCount(cell.soma[0](0.5))
@@ -393,7 +401,7 @@ def plot_transferfunction(cell, T, I0, S, I1, FRange):
         run_model(dt, T)
 
         N = len(counts)
-        tsp = counts.to_python()
+        tsp = np.array(counts.to_python())
 
         x = np.cos(6.28318530718 * tsp * freq / 1000.) / N
         y = np.sin(6.28318530718 * tsp * freq / 1000.) / N
