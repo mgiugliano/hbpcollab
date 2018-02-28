@@ -12,11 +12,11 @@ import random
 # the mean.
 #
 def load_model():
-    #h.cvode.cache_efficient(0)
+    h.cvode.cache_efficient(0)
     h.load_file("stdrun.hoc")
     h.load_file("import3d.hoc")
     h.load_file("constants.hoc")
-    #h.load_file("morphology.hoc")
+    h.load_file("morphology.hoc")
     cell = rn.create_cell(add_synapses=0)
     return cell
 
@@ -287,11 +287,11 @@ def plot_FI_and_modulation(cell, T, I0range, S, M, M1, FF):
     ax1.grid()                                          # "Grid" on
 
     p = [M,1000. * N / T]
-
     indthres = np.nonzero(I0range > M)
     crossind = indthres[0]
     rico = (F[crossind[0]] - F[crossind[0] - 1]) / (I0range[crossind[0]] - I0range[crossind[0] - 1])
     p[1] = rico * (M - I0range[crossind[0] - 1]) + F[crossind[0] - 1]
+    p1amp = rico * (M+M1 - I0range[crossind[0] - 1]) + F[crossind[0] - 1] - p[1]
 
     xmin, xmax = ax1.get_xbound()
     ymin, ymax = ax1.get_ybound()
@@ -300,17 +300,16 @@ def plot_FI_and_modulation(cell, T, I0range, S, M, M1, FF):
     ax1.add_line(l1)
     ax1.add_line(l2)
 
-    alpha = 1000. * (N1-N) / (T * 0.1*M)
     t = np.arange(ymin, p[1], (p[1]-ymin)*0.005)
-    i = M + M1 * np.cos(6.28*FF*t*0.02*10000.)
+    i = M + M1 * np.cos(6.28 * t * 5. / (p[1]-ymin))
     ax1.plot(i,t)
-    f = p[1] + 20 * M1 * np.cos(6.28 * FF * t * 0.002 * 100000.)
-    t = np.arange(xmin, p[0], (p[0]-xmin)*0.005)
+    t = np.arange(xmin, p[0], (p[0] - xmin) * 0.005)
+    f = p[1] + p1amp * np.cos(6.28 * t * 5. / (p[0] - xmin))
     ax1.plot(t,f)
 
     ax2 = fig.add_subplot(122)
     ax2.plot(timevec, somav)                        # Make the actual plot versus time
-    # timevecpyt = timevec.to_python()
+
     timevecpyt = np.arange(0., T, dt)
     tmp1 = -60 + 10 * np.cos(6.28*FF*timevecpyt)
     ax2.plot(timevecpyt, tmp1)
@@ -354,11 +353,9 @@ def plot_histogram(cell, T, I0, S, I1, F):
     PHI = np.angle(np.complex(np.sum(x), np.sum(y)), deg=False)
     tsp = np.remainder(tsp,  2 / F)
     C   = np.floor_divide(T, 2 / F)
-    print(C)
-    fig = plt.figure(figsize=(14, 4))
 
+    fig = plt.figure(figsize=(14, 4))
     hist, bins = np.histogram(tsp, bins=40)
-    print(hist)
     hist = 1000. * hist / ((bins[3] - bins[2]) * C)   # Hz
     # R1 = (np.max(hist) - np.min(hist))/2
 
