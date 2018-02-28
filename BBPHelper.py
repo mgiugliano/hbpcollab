@@ -12,7 +12,6 @@ import random
 # the mean.
 #
 def load_model():
-    h.cvode.cache_efficient(0)
     h.load_file("stdrun.hoc")
     h.load_file("import3d.hoc")
     h.load_file("constants.hoc")
